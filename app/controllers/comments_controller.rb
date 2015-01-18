@@ -1,55 +1,46 @@
 class CommentsController < ApplicationController
 def index 
-	@articles = Article.all
+	@comment = Comment.all
 end
 
 def show
-	@article = Article.find(params[:id])
-		@comment = Comment.new
-	@comment.article_id = @article.id
-	redirect_to article_path(@comment.article)
+	@Comment = Comment.find(params[:id])
+	@article = Article.new
+	@comment.comment_id = @comment.id
+	redirect_to comments_path(@article.comment)
 end
 
 def new
-	@article = Article.new
+	@comment = Comment.new
 end
 
 def create
-	@article = Article.new(article_params)
-	@article.save
-	redirect_to article_path(@article)
-	@comment = Comment.new(comment_params)
- 	@comment.article_id = params[:article_id]
-
-  	@comment.save
-
-  	redirect_to article_path(@comment.article)
+	article = Article.find(params[:article_id])
+	@comment = article.comments.new(comment_params)
+	@comment.save
+	redirect_to article_path(article)
 end
 
 def comment_params
-  params.require(:comment).permit(:author_name, :body)
-end
-
-def article_params
-  params.require(:article).permit(:title, :body)
+  params.require(:comment).permit(:title, :body)
 end
 
 def destroy
-	@article = Article.find(params[:id])
-	@article.destroy
-	redirect_to articles_path 
+	@comment = Comment.find(params[:id])
+	@comment.destroy
+	redirect_to comments_path 
 end
 
 def edit
-  @article = Article.find(params[:id])
+  @comment = Comment.find(params[:id])
 end
 
 def update
-  @article = Article.find(params[:id])
-  @article.update(article_params)
+  @comment = Comment.find(params[:id])
+  @comment.update(comment_params)
 
-  flash.notice = "Article '#{@article.title}' Updated!"
+  flash.notice = "comment '#{@comment.title}' Updated!"
   
-  redirect_to article_path(@article)
+  redirect_to comment_path(@comment)
 end
 end
